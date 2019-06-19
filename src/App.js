@@ -8,7 +8,7 @@ class App extends React.Component
 		super(props);
 
 		this.state = {
-			city: "BANGALORE",
+			city: props.city,
 			bankDetails: JSON.parse(localStorage.getItem("bankDetails"+props.city)) || [],
 			searchText: "",
 			present: 1,
@@ -70,6 +70,8 @@ class App extends React.Component
 		{
 			//localStorage.setItem("bankDetails"+this.state.city, JSON.stringify(this.state.bankDetails));
 
+			this.setState({isLoading: true});
+
 			this.setState(
 					prevState => 
 					{
@@ -84,6 +86,7 @@ class App extends React.Component
 			let len =0;
 			for(let x of this.state.bankDetails) len++;
 			if (len===0)
+			{
 			fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + value)
 				.then(response => response.json())
 					.then(response => {
@@ -103,6 +106,16 @@ class App extends React.Component
 								, () => {localStorage.setItem("bankDetails"+value, JSON.stringify(this.state.bankDetails));}
 							);
 						});
+			}
+			else
+			{
+				this.setState(
+					prevState => {
+						prevState.isLoading= false;
+						return prevState;
+					}
+				)
+			}
 
 			//console.log(this.state.city);
 		}
@@ -209,7 +222,7 @@ class App extends React.Component
 		//console.log(lastPage)
 
 		const marginFifty = {margin: "10px 50px 10px 50px", padding: "10px" };
-		const cities = ["MUMBAI", "CHENNAI", "PUNE", "KOLKATA", "BANGALORE"].map(city => <option key={city} value={city}>{city}</option>);
+		const cities = ["MUMBAI", "CHENNAI", "LUCKNOW", "KOLKATA", "BANGALORE"].map(city => <option key={city} value={city}>{city}</option>);
 		const rowsPerPage = [10, 25, 50, 100].map(value => <option key={value} value={value}>{value}</option>);
 	
 
