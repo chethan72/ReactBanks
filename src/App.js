@@ -82,40 +82,43 @@ class App extends React.Component
 
 						return prevState;
 					}
-			)
-			let len =0;
-			for(let x of this.state.bankDetails) len++;
-			if (len===0)
-			{
-			fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + value)
-				.then(response => response.json())
-					.then(response => {
-							response.map(data => { data.favorite = false; return data;});
-		
-							this.setState(
-								prevState => {
-									prevState.total = response.length;
-									prevState.bankDetails=response; 
-									prevState.present = 1; 
-									prevState.last = parseInt(prevState.total/prevState.limit);
-									if(prevState.total%prevState.limit !== 0)
-										prevState.last += 1;
-									prevState.isLoading = false;
-									return prevState;
-								}
-								, () => {localStorage.setItem("bankDetails"+value, JSON.stringify(this.state.bankDetails));}
-							);
-						});
-			}
-			else
-			{
-				this.setState(
-					prevState => {
-						prevState.isLoading= false;
-						return prevState;
-					}
-				)
-			}
+					, 
+			() => {
+				let len =0;
+				for(let x of this.state.bankDetails) len++;
+				console.log(this.state, value);
+				if (len===0)
+				{
+				fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + value)
+					.then(response => response.json())
+						.then(response => {
+								response.map(data => { data.favorite = false; return data;});
+			
+								this.setState(
+									prevState => {
+										prevState.total = response.length;
+										prevState.bankDetails=response; 
+										prevState.present = 1; 
+										prevState.last = parseInt(prevState.total/prevState.limit);
+										if(prevState.total%prevState.limit !== 0)
+											prevState.last += 1;
+										prevState.isLoading = false;
+										return prevState;
+									}
+									, () => {localStorage.setItem("bankDetails"+value, JSON.stringify(this.state.bankDetails));}
+								);
+							});
+				}
+				else
+				{
+					this.setState(
+						prevState => {
+							prevState.isLoading= false;
+							return prevState;
+						}
+					)
+				}
+			})
 
 			//console.log(this.state.city);
 		}
