@@ -3,19 +3,15 @@ import BankTable from "./BankTable"
 
 class App extends React.Component
 {
-	constructor()
+	constructor(props)
 	{
-		super();
+		super(props);
 
 		this.state = {
-			bankDetails: [],
-			filteredDetails: [],
 			city: "BANGALORE",
+			bankDetails: JSON.parse(localStorage.getItem("bankDetails"+props.city)) || [],
 			searchText: "",
-			first: 1,
-			previous: 1,
 			present: 1,
-			next: 2,
 			last: 0,
 			limit: 10,
 			total: 0,
@@ -31,37 +27,40 @@ class App extends React.Component
 
 	componentDidMount()
 	{
+		let len = 0;
+		for(let x of this.state.bankDetails) len++;
+		if(len === 0)
+		{
 		fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + this.state.city)
 			.then(response => response.json())
-				.then(response => this.setState(prevState => {
-													prevState.total = response.length;
-													prevState.bankDetails=response; 
-													prevState.filteredDetails=response; 
-													prevState.first = 1; 
-													prevState.previous = 1; 
-													prevState.next = 2; 
-													prevState.last = parseInt(prevState.total/prevState.limit);
-													if(prevState.total%prevState.limit !== 0)
-														prevState.last += 1;
-													prevState.isLoading = false;
-													return prevState;
-												}
-												, this.handleSubmit(this.state)
-								  )
-			    );
+				.then(response => {
+					response.map(data => { data.favorite = false; return data;});
 		
-		/*const list = this.state.filteredDetails.map(branch => ++count)
-		pages = count/this.state.limit;
-		this.setState(
-			prevState => {
-				prevState.first = 1; 
-				prevState.previous = 1; 
-				prevState.next = 2; 
-				prevState.last = pages;
-				return prevState;
-			}
-		)*/
-		console.log(this.state);	
+					this.setState(
+						prevState => {
+							prevState.total = response.length;
+							prevState.bankDetails=response; 
+							prevState.filteredDetails=response;
+							prevState.present = 1; 
+							prevState.last = parseInt(prevState.total/prevState.limit);
+							if(prevState.total%prevState.limit !== 0)
+								prevState.last += 1;
+							prevState.isLoading = false;
+							return prevState;
+						}
+						, () => {localStorage.setItem("bankDetails"+this.state.city, JSON.stringify(this.state.bankDetails));}
+					);});
+		}
+		else
+			this.setState(prevState => { 
+				prevState.total = len;
+				prevState.last = parseInt(prevState.total/prevState.limit);
+				if(prevState.total%prevState.limit !== 0)
+								prevState.last += 1;
+				prevState.isLoading = false; 
+				return prevState; 
+			});
+		//console.log(this.state);	
 	}
 
 	handleChange(event)
@@ -69,32 +68,42 @@ class App extends React.Component
 		const {name, value} = event.target;
 		if(name === "city")
 		{
+			//localStorage.setItem("bankDetails"+this.state.city, JSON.stringify(this.state.bankDetails));
+
 			this.setState(
 					prevState => 
 					{
+						prevState.bankDetails = JSON.parse(localStorage.getItem("bankDetails"+value)) || []
 						prevState.city = value;
+						prevState.searchText = "";
+						prevState.present = 1;
 
 						return prevState;
 					}
 			)
-
+			let len =0;
+			for(let x of this.state.bankDetails) len++;
+			if (len===0)
 			fetch("https://vast-shore-74260.herokuapp.com/banks?city=" + value)
 				.then(response => response.json())
-					.then(response => this.setState(prevState => {
-														prevState.total = response.length;
-														prevState.bankDetails=response; 
-														prevState.filteredDetails=response; 
-														prevState.first = 1; 
-														prevState.previous = 1; 
-														prevState.next = 2; 
-														prevState.searchText = "";
-														prevState.last = parseInt(prevState.total/prevState.limit);
-														if(prevState.total%prevState.limit !== 0)
-															prevState.last += 1;
-														return prevState;
-													}
-									  )
-					);
+					.then(response => {
+							response.map(data => { data.favorite = false; return data;});
+		
+							this.setState(
+								prevState => {
+									prevState.total = response.length;
+									prevState.bankDetails=response; 
+									prevState.present = 1; 
+									prevState.last = parseInt(prevState.total/prevState.limit);
+									if(prevState.total%prevState.limit !== 0)
+										prevState.last += 1;
+									prevState.isLoading = false;
+									return prevState;
+								}
+								, () => {localStorage.setItem("bankDetails"+value, JSON.stringify(this.state.bankDetails));}
+							);
+						});
+
 			//console.log(this.state.city);
 		}
 		else if(name === "limit")
@@ -110,115 +119,116 @@ class App extends React.Component
 		}
 		else if(name === "searchText")
 		{
-			const VALUE = value.toUpperCase();
 			this.setState(
 					prevState => 
 					{
 						prevState.searchText = value;
+						prevState.present = 1; 
 
 						return prevState;
 					}
 					, this.handleSubmit(value)
 			)
-
 			//console.log(this.state.searchText);
-
-			const filteredData = this.state.bankDetails.filter(
-				branch => 
-					branch.ifsc.indexOf(VALUE)>=0 || branch.bank_id===value || branch.address.indexOf(VALUE)>=0 || branch.district.indexOf(VALUE)>=0 || branch.bank_name.indexOf(VALUE)>=0 
-			)
-
-
-			this.setState(prevState => {
-				prevState.filteredDetails = filteredData; 
-				prevState.previous = 1;
-				prevState.next = 2;
-				prevState.present = 1; 
-				return prevState;}
-				, this.handleSubmit(value)
-			)
 		}
 	}
 
 	handleSubmit(text)
 	{
-		console.log(text);
+		//console.log(text);
 	}
 
 
 	handleClick(event)
 	{
 		const {name, value} = event.target;
-		console.log(name,value);
+		//console.log(name,value);
 		if(name ==="first")
 		{
-			this.setState(
-				prevState => {
-					prevState.previous= 1;
-					prevState.next= 2;
-					prevState.present= 1;
-					return prevState;
-				}
-			)
+			this.setState(prevState => { prevState.present= 1; return prevState;})
 		}
 		else if(name === "last")
 		{
-			this.setState(
-				prevState => {
-					prevState.previous= prevState.last-1; 
-					prevState.next= prevState.last; 
-					prevState.present= prevState.last;
-					return prevState;
-				}
-			)
+			this.setState(prevState => { prevState.present= parseInt(value); prevState.last= parseInt(value); return prevState;})
 		}
-		else if(name === "previous" && value >= 1)
+		else if(name === "previous" && parseInt(value) > 1)
 		{
-
-			this.setState(
-				prevState => {
-					prevState.next= prevState.present;
-					prevState.present= prevState.previous;
-					prevState.previous= prevState.previous-1;
-					return prevState;
-				}
-				, this.handleSubmit(this.state)	
-			)
+			this.setState(prevState => { prevState.present= parseInt(value)-1; return prevState;}, this.handleSubmit(this.state))
 		}
-		else if(name === "next" && value <= this.state.last)
+		else if(name === "next")
 		{
-			this.setState(
-				prevState => {
-					prevState.previous= prevState.present;
-					prevState.present= prevState.next;
-					prevState.next= prevState.next+1;
+			console.log(name, parseInt(value), this.state.last);
+			if(this.state.last > value)
+			{
+				console.log(name, value);
+				this.setState(prevState => { prevState.present= parseInt(value)+1; return prevState; })
+			}
+		}
+		else if(name === "favorite")
+		{
+			//console.log(value);
+			this.setState( prevState => {
+					const branchIndex = prevState.bankDetails.findIndex(branch => branch.ifsc===value);
+					prevState.bankDetails[branchIndex].favorite =!prevState.bankDetails[branchIndex].favorite;
+					console.log(prevState.bankDetails[branchIndex].favorite);
 					return prevState;
 				}
+				, () => {localStorage.setItem("bankDetails"+this.state.city, JSON.stringify(this.state.bankDetails));}
 			)
+			
+		}
+		else if(name === "favorites")
+		{
+			this.setState( prevState => {
+				prevState.bankDetails = prevState.bankDetails.filter(branch => branch.favorite===true)
+				prevState.present = 1;
+				return prevState;
+			})
 		}
 
 	}
 
 	render()
 	{
+		const filteredData = this.state.bankDetails.filter(
+				branch => 
+					branch.ifsc.indexOf(this.state.searchText.toUpperCase())>=0 || 
+					branch.bank_id===parseInt(this.state.searchText.toUpperCase()) || 
+					branch.address.indexOf(this.state.searchText.toUpperCase())>=0 || 
+					branch.district.indexOf(this.state.searchText)>=0 || 
+					branch.bank_name.indexOf(this.state.searchText.toUpperCase())>=0 
+			)
+
+		const startOffset = (this.state.present-1)*this.state.limit;
+		const endOffset = this.state.present*this.state.limit;
+		const pageData = filteredData.slice(startOffset, endOffset);
+		let numberOfEntries = 0;
+		for(let x of filteredData) 
+				numberOfEntries++;
+		const lastPage = parseInt(numberOfEntries/this.state.limit) + 1;
+		//console.log(lastPage)
+
+		const marginFifty = {margin: "10px 50px 10px 50px", padding: "10px" };
+		const cities = ["MUMBAI", "CHENNAI", "PUNE", "KOLKATA", "BANGALORE"].map(city => <option key={city} value={city}>{city}</option>);
+		const rowsPerPage = [10, 25, 50, 100].map(value => <option key={value} value={value}>{value}</option>);
+	
+
+
 		if(this.state.isLoading === true)
 			return (<h1>Loading...</h1>)
 		else
 		return (
-			<div>
-			<div className="hero" style={{paddingLeft:"10px", backgroundColor: "#222", width: "100%", marginLeft: "0px",fontSize: "32px", fontWeight: "bold", color: "crimson",}}>Bank Branches</div>
-			<div style={{backgroundColor: "#eee", margin: "50px 50px"}}>
-				<div className="select is-danger" style={{float: "left"}}>
+			<div style={{color: "black"}}>
+			<div className="box" style={{margin: "0px", padding: "10px", backgroundColor: "#1d1d1d", color: "#ff3333", fontSize: "32px", fontWeight: "bolder" }}>BANK BRANCHES</div>
+			<div className="box" style={marginFifty}>
+				<div className="select is-danger">
 					<select value={this.state.city} name="city" onChange={this.handleChange}>
-						<option value="MUMBAI">Mumbai</option>
-						<option value="CHENNAI">Chennai</option>
-						<option value="PUNE">Pune</option>
-						<option value="KOLKATA">Kolkata</option>
-						<option value="BANGALORE">Bangalore</option>
+						{cities}
 					</select>
 				</div>
 				&nbsp;
 				&nbsp;
+				<button name="favorites" onClick={this.handleClick} className="button is-danger">YOUR FAVORITES</button>
 				<span>
 					<input 
 						type="text" 
@@ -229,43 +239,36 @@ class App extends React.Component
 						placeholder="Search here" 
 						style={{float: "right", width: "30%"}}/>
 				</span>
-				<BankTable data={this.state} />
+			</div>
+			<div className="box" style={marginFifty}>
+				<BankTable data={pageData} handleClick={this.handleClick} />
+			</div>
+			<div className="box" style={marginFifty}>
 			<div className="select is-danger">
 				<select value={this.state.limit} name="limit" onChange={this.handleChange}>
-					<option value="10">10</option>
-					<option value="25">25</option>
-					<option value="50">50</option>
-					<option value="100">100</option>
+					{rowsPerPage}
 				</select>
 			</div>
 			<div style={{float:"right"}}>	
-				<Square page={this.state.first} name="first" limit={this.state.limit} handleClick={this.handleClick} />
-				<Square page={this.state.previous} name="previous" limit={this.state.limit} handleClick={this.handleClick} />
-				<Square page={this.state.present} name={this.state.present} limit={this.state.limit} handleClick={this.handleClick} disabled={true} />
-				<Square page={this.state.next} name="next" limit={this.state.limit} handleClick={this.handleClick} />
-				<Square page={this.state.last} name="last" limit={this.state.limit} handleClick={this.handleClick} />				
-			</div>	
-			</div>	
+				<Square page={1} name="first" handleClick={this.handleClick} />
+				<Square page={this.state.present} name="previous" handleClick={this.handleClick} />
+				<Square page={this.state.present} name={this.state.present} handleClick={this.handleClick} disabled={true} />
+				<Square page={this.state.present} name="next" handleClick={this.handleClick} />
+				<Square page={lastPage} name="last" handleClick={this.handleClick} />				
 			</div>
+			</div>	
+			</div>	
 		);
 	}
 }
 
 function Square(props)
-	{
-	  return (
-	      <button
-	      	className="button is-danger is-outlined is-normal"
-	      	name={props.name} 
-	        value={props.page}
-	        style={{color: "black", backgroundColor: "white"}} 
-	        onClick={props.handleClick}
-	        disabled = {props.disabled}
-	        >
-	        {props.name}
-	        </button>
-	  )
-	}
-
+{
+ 	return (
+    	<button className="button is-danger is-outlined" name={props.name} value={props.page} onClick={props.handleClick}>
+        	{props.name}
+        </button>
+  	)
+}
 
 export default App

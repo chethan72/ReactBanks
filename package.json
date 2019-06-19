@@ -1,7 +1,7 @@
 {
-  "name": "ReactBanks",
+  "name": "fetch-display",
   "version": "0.1.0",
-  "private": false,
+  "private": true,
   "homepage": "https://chethan72.github.io/ReactBanks",
   "dependencies": {
     "gh-pages": "^2.0.1",

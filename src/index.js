@@ -6,6 +6,6 @@ import "./bulma.min.css"
 
 
 ReactDOM.render(
-	<App />,
+	<App city="BANGALORE"/>,
 	document.getElementById("root")
 	);
