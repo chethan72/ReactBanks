@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/ReactBanks/static/css/main.9e4b045f.chunk.css",
-    "main.js": "/ReactBanks/static/js/main.3054269e.chunk.js",
-    "main.js.map": "/ReactBanks/static/js/main.3054269e.chunk.js.map",
+    "main.js": "/ReactBanks/static/js/main.beaa79ff.chunk.js",
+    "main.js.map": "/ReactBanks/static/js/main.beaa79ff.chunk.js.map",
     "runtime~main.js": "/ReactBanks/static/js/runtime~main.37e1c244.js",
     "runtime~main.js.map": "/ReactBanks/static/js/runtime~main.37e1c244.js.map",
     "static/js/2.4e81ba5b.chunk.js": "/ReactBanks/static/js/2.4e81ba5b.chunk.js",
     "static/js/2.4e81ba5b.chunk.js.map": "/ReactBanks/static/js/2.4e81ba5b.chunk.js.map",
     "index.html": "/ReactBanks/index.html",
-    "precache-manifest.754d14d7cbac6ea835cafd75d75e1b1b.js": "/ReactBanks/precache-manifest.754d14d7cbac6ea835cafd75d75e1b1b.js",
+    "precache-manifest.b152a4ede0ee95e33b35e584d41c4e51.js": "/ReactBanks/precache-manifest.b152a4ede0ee95e33b35e584d41c4e51.js",
     "service-worker.js": "/ReactBanks/service-worker.js",
     "static/css/main.9e4b045f.chunk.css.map": "/ReactBanks/static/css/main.9e4b045f.chunk.css.map"
   }
