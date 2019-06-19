@@ -222,7 +222,7 @@ class App extends React.Component
 		//console.log(lastPage)
 
 		const marginFifty = {margin: "10px 50px 10px 50px", padding: "10px" };
-		const cities = ["MUMBAI", "CHENNAI", "LUCKNOW", "KOLKATA", "BANGALORE"].map(city => <option key={city} value={city}>{city}</option>);
+		const cities = ["MUMBAI", "CHENNAI", "PUNE", "LUCKNOW", "KOLKATA", "BANGALORE"].map(city => <option key={city} value={city}>{city}</option>);
 		const rowsPerPage = [10, 25, 50, 100].map(value => <option key={value} value={value}>{value}</option>);
 	
 
