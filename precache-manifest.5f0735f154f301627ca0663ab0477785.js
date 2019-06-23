@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b9f97a1057dcf0fa18392b40b8767aa8",
+    "revision": "c68021e94d135ee035d48855448ee61d",
     "url": "/ReactBanks/index.html"
   },
   {
-    "revision": "4c8b3052afb15606fec0",
+    "revision": "8b2f1e970cfb6569d87b",
     "url": "/ReactBanks/static/css/main.9e4b045f.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/ReactBanks/static/js/2.4e81ba5b.chunk.js"
   },
   {
-    "revision": "4c8b3052afb15606fec0",
-    "url": "/ReactBanks/static/js/main.05daa71c.chunk.js"
+    "revision": "8b2f1e970cfb6569d87b",
+    "url": "/ReactBanks/static/js/main.d78f1559.chunk.js"
   },
   {
     "revision": "95eb13c8bb55c965a14b",
